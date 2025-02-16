@@ -67,10 +67,12 @@ SPECIAL_PUNCTUATION_TRANS = str.maketrans(SPECIAL_PUNCTUATION, " " * len(SPECIAL
 PUNCTUATION = ".,!?"
 PUNCTUATION_TRANS = str.maketrans(PUNCTUATION, " " * len(PUNCTUATION))
 
+WORD_SURROUNDED_BY_SINGLE_QUOTES_RE = re.compile(r"'([\w\-]+)'")
+
 
 def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False, remove_special_punctuation=False,
                remove_stopwords_en=False, lemmatize=False, fix_single_quotes=False, fix_double_quotes=False,
-               strip_quotes=False, strip_dashes=False,
+               normalize_single_quotes=False, strip_quotes=False, strip_dashes=False,
                remove_urls=False, bigrams: set = None, trigrams: set = None, remove_numbers=False,
                use_nltk_tokenizer=False, asciifold=False, demojize=False):
 
@@ -86,6 +88,9 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
 
     if fix_double_quotes:
         text = text.translate(DOUBLE_QUOTE_TRANS)
+
+    if normalize_single_quotes:
+        text = WORD_SURROUNDED_BY_SINGLE_QUOTES_RE.sub(r'"\1"', text)
 
     text = text.translate(DASHES_TRANS)
 

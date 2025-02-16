@@ -330,3 +330,16 @@ class TestText(TestCase):
             " ".join(preprocess("test️ ❤️ 𝕒𝕓𝕔", demojize=True, asciifold=True)),
             "test :red_heart: abc"
         )
+
+    def test_asciifold_accents(self):
+        self.assertEqual(
+            " ".join(preprocess("ç â ä à é ê ë è ï î ì ô ö ò ú ü û ù ÿ", asciifold=True)),
+            "c a a a e e e e i i i o o o u u u u y"
+        )
+
+
+    def test_normalize_single_quotes(self):
+        self.assertEqual(
+            " ".join(preprocess("what's that? 'woman' test' '' 'yeah 'test-test'", normalize_single_quotes=True)),
+            "what's that? \"woman\" test' '' 'yeah \"test-test\""
+        )

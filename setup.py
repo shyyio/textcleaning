@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="textcleaning",
-    version="1.0",
+    version="2.0",
     description="Text cleaning",
     packages=["textcleaning"],
     install_requires=[
