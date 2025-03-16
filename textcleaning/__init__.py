@@ -6,10 +6,12 @@ from lxml import etree
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize.casual import HANDLES_RE
 from unidecode import unidecode
 import emoji
 
 LINK_RE = re.compile(r"(https?://[\w\-_.]+\.[a-z]{2,4}([^\s<'\"]*|$))")
+MENTION_RE = re.compile(r"^@[a-zA-Z0-9\-.]+$")
 
 get_text = etree.XPath("//text()")
 
@@ -74,7 +76,7 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
                remove_stopwords_en=False, lemmatize=False, fix_single_quotes=False, fix_double_quotes=False,
                normalize_single_quotes=False, strip_quotes=False, strip_dashes=False,
                remove_urls=False, bigrams: set = None, trigrams: set = None, remove_numbers=False,
-               use_nltk_tokenizer=False, asciifold=False, demojize=False):
+               use_nltk_tokenizer=False, asciifold=False, demojize=False, replace_mentions=None):
 
     if lowercase:
         text = text.lower()
@@ -136,6 +138,12 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
 
     if trigrams:
         words = _transform_trigram(nltk.trigrams(chain(words, ("*", "*"))), trigrams)
+
+    if replace_mentions:
+        words = [
+            w if MENTION_RE.match(w) is None else replace_mentions
+            for w in words
+        ]
 
     if remove_numbers:
         words = filter(lambda w: not w.isnumeric(), words)

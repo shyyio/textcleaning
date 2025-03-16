@@ -343,3 +343,9 @@ class TestText(TestCase):
             " ".join(preprocess("what's that? 'woman' test' '' 'yeah 'test-test'", normalize_single_quotes=True)),
             "what's that? \"woman\" test' '' 'yeah \"test-test\""
         )
+
+    def test_remove_at_mentions(self):
+        self.assertEqual(
+            " ".join(preprocess("test @at @abc.def @abc@ test", replace_mentions="@user")),
+            "test @user @user @abc@ test"
+        )
