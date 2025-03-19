@@ -134,7 +134,7 @@ class TestText(TestCase):
             remove_punctuation=True,
             lemmatize=True,
             fix_single_quotes=True,
-            remove_urls=True
+            replace_urls=" "
         )
         expected = "hello world it's it's"
 
@@ -150,7 +150,7 @@ class TestText(TestCase):
             lemmatize=True,
             fix_single_quotes=True,
             remove_stopwords_en=True,
-            remove_urls=True
+            replace_urls=" "
         )
         expected = "hello world |"
 
@@ -167,7 +167,7 @@ class TestText(TestCase):
             lemmatize=False,
             fix_single_quotes=True,
             remove_stopwords_en=False,
-            remove_urls=False
+            replace_urls=False
         )
 
         expected = ">>217709510 is there a servant that is against civilization and humanity literally instant summon"
@@ -184,7 +184,7 @@ class TestText(TestCase):
             lemmatize=False,
             fix_single_quotes=True,
             remove_stopwords_en=False,
-            remove_urls=False
+            replace_urls=" "
         )
 
         expected = "doesn't"
@@ -201,7 +201,7 @@ class TestText(TestCase):
             lemmatize=False,
             fix_single_quotes=True,
             remove_stopwords_en=False,
-            remove_urls=False
+            replace_urls=" "
         )
 
         expected = ""
@@ -348,4 +348,40 @@ class TestText(TestCase):
         self.assertEqual(
             " ".join(preprocess("test @at @abc.def @abc@ test", replace_mentions="@user")),
             "test @user @user @abc@ test"
+        )
+
+    def test_replace_url1(self):
+        self.assertEqual(
+            " ".join(preprocess("hello www.youtube.com", replace_urls="@url")),
+            "hello @url"
+        )
+
+    def test_replace_url2(self):
+        self.assertEqual(
+            " ".join(preprocess("hello www.youtube.com", replace_urls=r"!\1")),
+            "hello !youtube.com"
+        )
+
+    def test_replace_url3(self):
+        self.assertEqual(
+            " ".join(preprocess("hello https://youtube.com", replace_urls=r"!\1")),
+            "hello !youtube.com"
+        )
+
+    def test_replace_url4(self):
+        self.assertEqual(
+            " ".join(preprocess("https://youtube.com", replace_urls=r"!\1")),
+            "!youtube.com"
+        )
+
+    def test_replace_url5(self):
+        self.assertEqual(
+            " ".join(preprocess("https://youtube.com/dsu90fq90w-212/?9w03&=12", replace_urls=r"!\1")),
+            "!youtube.com"
+        )
+
+    def test_replace_url6(self):
+        self.assertEqual(
+            " ".join(preprocess("youtube.com/dsu90fq90w-212/?9w03&=12", replace_urls=r"!\1")),
+            "!youtube.com"
         )

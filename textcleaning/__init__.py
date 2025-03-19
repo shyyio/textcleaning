@@ -6,11 +6,12 @@ from lxml import etree
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize.casual import HANDLES_RE
 from unidecode import unidecode
 import emoji
 
-LINK_RE = re.compile(r"(https?://[\w\-_.]+\.[a-z]{2,4}([^\s<'\"]*|$))")
+LINK_RE = re.compile(r"https?://(?:www\.)?([\w\-_.]+\.[a-z]{2,4})/?([^\s<'\"]*|$)")
+LINK_RE2 = re.compile(r"!?(?:www\.)?([a-z0-9\-.]*[a-z0-9\-]\.[a-z]{2,4})(/[^\s<'\"]*)?")
+
 MENTION_RE = re.compile(r"^@[a-zA-Z0-9\-.]+$")
 
 get_text = etree.XPath("//text()")
@@ -75,7 +76,7 @@ WORD_SURROUNDED_BY_SINGLE_QUOTES_RE = re.compile(r"'([\w\-]+)'")
 def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False, remove_special_punctuation=False,
                remove_stopwords_en=False, lemmatize=False, fix_single_quotes=False, fix_double_quotes=False,
                normalize_single_quotes=False, strip_quotes=False, strip_dashes=False,
-               remove_urls=False, bigrams: set = None, trigrams: set = None, remove_numbers=False,
+               replace_urls=None, bigrams: set = None, trigrams: set = None, remove_numbers=False,
                use_nltk_tokenizer=False, asciifold=False, demojize=False, replace_mentions=None):
 
     if lowercase:
@@ -83,7 +84,6 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
 
     if demojize:
         text = emoji.demojize(text)
-
 
     if fix_single_quotes:
         text = text.translate(SINGLE_QUOTE_TRANS)
@@ -99,8 +99,9 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
     if strip_dashes:
         text = DASHES_RE.sub("-", text)
 
-    if remove_urls:
-        text = LINK_RE.sub(" ", text)
+    if replace_urls:
+        text = LINK_RE.sub(replace_urls, text)
+        text = LINK_RE2.sub(replace_urls, text)
 
     if clean_html:
         try:
