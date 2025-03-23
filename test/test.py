@@ -331,6 +331,17 @@ class TestText(TestCase):
             "test :red_heart: abc"
         )
 
+    def test_remove_emoji(self):
+        self.assertEqual(
+            " ".join(preprocess("test️ ❤️", remove_emoji=True)),
+            "test"
+        )
+
+        self.assertEqual(
+            " ".join(preprocess("test️ ❤️ 𝕒𝕓𝕔", remove_emoji=True, asciifold=True)),
+            "test abc"
+        )
+
     def test_asciifold_accents(self):
         self.assertEqual(
             " ".join(preprocess("ç â ä à é ê ë è ï î ì ô ö ò ú ü û ù ÿ", asciifold=True)),
@@ -384,6 +395,13 @@ class TestText(TestCase):
         self.assertEqual(
             " ".join(preprocess("youtube.com/dsu90fq90w-212/?9w03&=12", replace_urls=r"!\1")),
             "!youtube.com"
+        )
+    
+    def test_replace_url7(self):
+        self.assertEqual(
+            " ".join(preprocess("https://reddit.com/test bsky.app/profile/atru...",
+                                demojize=True, asciifold=True, replace_urls=r"!\1")),
+            "!reddit.com !bsky.app"
         )
 
     def test_custom_replace(self):

@@ -77,11 +77,16 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
                remove_stopwords_en=False, lemmatize=False, fix_single_quotes=False, fix_double_quotes=False,
                normalize_single_quotes=False, strip_quotes=False, strip_dashes=False,
                replace_urls=None, bigrams: set = None, trigrams: set = None, remove_numbers=False,
-               use_nltk_tokenizer=False, asciifold=False, demojize=False, replace_mentions=None,
+               use_nltk_tokenizer=False, asciifold=False, demojize=False, remove_emoji=False, replace_mentions=None,
                custom_replace=None):
+
+    assert not (demojize and remove_emoji), "demojize and remove_emoji can't be used in conjunction"
 
     if lowercase:
         text = text.lower()
+
+    if remove_emoji:
+        text = emoji.replace_emoji(text, " ")
 
     if demojize:
         text = emoji.demojize(text)
