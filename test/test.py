@@ -385,3 +385,9 @@ class TestText(TestCase):
             " ".join(preprocess("youtube.com/dsu90fq90w-212/?9w03&=12", replace_urls=r"!\1")),
             "!youtube.com"
         )
+
+    def test_custom_replace(self):
+        self.assertEqual(
+            " ".join(preprocess("abc def", custom_replace={"abc": ""})),
+            "def"
+        )

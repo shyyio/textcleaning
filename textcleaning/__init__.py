@@ -77,7 +77,8 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
                remove_stopwords_en=False, lemmatize=False, fix_single_quotes=False, fix_double_quotes=False,
                normalize_single_quotes=False, strip_quotes=False, strip_dashes=False,
                replace_urls=None, bigrams: set = None, trigrams: set = None, remove_numbers=False,
-               use_nltk_tokenizer=False, asciifold=False, demojize=False, replace_mentions=None):
+               use_nltk_tokenizer=False, asciifold=False, demojize=False, replace_mentions=None,
+               custom_replace=None):
 
     if lowercase:
         text = text.lower()
@@ -127,6 +128,9 @@ def preprocess(text, lowercase=False, clean_html=False, remove_punctuation=False
         words = word_tokenize(text, language="english")
     else:
         words = text.split()
+
+    if custom_replace:
+        words = (custom_replace[w] if w in custom_replace else w for w in words)
 
     if strip_quotes:
         words = map(lambda w: w.strip("\"'“”"), words)
