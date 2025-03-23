@@ -12,7 +12,7 @@ import emoji
 LINK_RE = re.compile(r"https?://(?:www\.)?([\w\-_.]+\.[a-z]{2,5})/?([^\s<'\"]*|$)")
 LINK_RE2 = re.compile(r"!?(?:www\.)?([a-z0-9\-.]*[a-z0-9\-]\.[a-z]{2,5})(/[^\s<'\"]*)?")
 
-MENTION_RE = re.compile(r"^@[a-zA-Z0-9\-.]+$")
+MENTION_RE = re.compile(r"^@[a-zA-Z0-9\-_.]+$")
 
 get_text = etree.XPath("//text()")
 
